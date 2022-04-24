@@ -1,0 +1,95 @@
+﻿@model PhotoTest.ViewModels.PostViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@if (Model == null)
+{
+    <strong>Not Found</strong>
+}
+else
+{
+    <div>
+        <div>
+            <a asp-action="Index" class="btn btn-info">Back to List</a>
+        </div>
+
+        <hr />
+
+        <div class="card" style="width: 38rem; margin-inline: auto;">
+            <img src="/uploads/images/@Html.DisplayFor(model => model.Post.ImagePath)" alt="@Model?.Post.Id" class="card-img-top" />
+            <div class="card-body">
+                <h5 class="card-title">Posted by: @Html.DisplayFor(model => model.Post.User.UserName)</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(model => model.Post.CreatedDate)</h6>
+                <p class="card-text">@Html.DisplayFor(model => model.Post.Status)</p>
+
+
+            </div>
+            <div class="card-footer d-flex align-items-center">
+                <div>@Html.DisplayFor(model => model.Post.FavoriteCount) Likes</div>
+                @if (Model?.User != null)
+                {
+                    @if (Model.LikedPost)
+                    {
+                        <a asp-area="" asp-controller="Favorites" asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-sm btn-danger ms-1 me-auto" title="Dislike the post">👎</a>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="Favorites" asp-action="Create" asp-route-id="@Model.Post.Id" class="btn btn-sm btn-success ms-1 me-auto" title="Like the post">👍</a>
+                    }
+                }
+
+                @if (Model?.Post.User == Model?.User)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model?.Post.Id" class="btn btn-sm btn-outline-warning ms-auto me-1">Edit Post</a>
+                    <a asp-action="Delete" asp-route-id="@Model?.Post.Id" class="btn btn-sm btn-outline-danger">Delete Post</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    @if (Model?.User != null)
+    {
+        <form method="post" asp-action="Details">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Post a comment" aria-label="Post a comment" asp-for="Text">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Comment</button>
+                </div>
+            </div>
+        </form>
+    }
+
+    <hr />
+
+    <div>
+        <h3>Comments</h3>
+
+        <ul class="list-group">
+            @foreach (var comment in Model?.Comments)
+            {
+                <li class="list-group-item">
+                    <h6>Comment By: @comment?.User?.UserName</h6>
+                    <div>@comment?.CommentMessage</div>
+                    <small class="text-muted">Commented at: @comment?.CreatedDate</small>
+
+                    @if (comment?.User == Model?.User)
+                    {
+                        <a asp-area=""
+               asp-action="Delete"
+               asp-controller="Comments"
+               asp-route-id="@comment?.Id"
+               class="text-danger">
+                            Delete
+                        </a>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+}

@@ -1,0 +1,34 @@
+﻿@model IEnumerable<PhotoTest.Models.Post>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> @ViewBag.SuccessMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-evenly align-items-center">
+    <h1>Posts</h1>
+
+    <a asp-action="Create" class="btn btn-outline-primary">Create New Post</a>
+</div>
+
+@foreach (var item in Model)
+{
+    <div class="card mt-3" style="width: 38rem; margin-inline: auto;">
+        <a asp-action="Details" asp-route-id="@item.Id">
+            <img src="/uploads/images/@item.ImagePath" alt="@item.Id" class="card-img-top" />
+        </a>
+        <div class="card-body">
+            <h5 class="card-title">Posted by: @item?.User?.UserName</h5>
+            <h6 class="card-subtitle mb-2 text-muted">@item?.CreatedDate)</h6>
+            <p class="card-text">@item?.Status</p>
+        </div>
+    </div>
+}
